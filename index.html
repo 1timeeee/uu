@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Animation with Redirect</title>
+    <style>
+        body {
+            background-color: black;
+            color: #ffffff; /* النصوص باللون الأبيض */
+            font-family: 'Courier New', monospace;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .terminal-text {
+            color: #ffffff; /* نص باللون الأبيض */
+            font-size: 1.5em;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+            border-right: 2px solid #ffffff; /* المؤشر باللون الأبيض */
+            animation: blink-cursor 0.7s steps(2) infinite;
+        }
+
+        @keyframes blink-cursor {
+            from { border-right-color: #ffffff; }
+            to { border-right-color: transparent; }
+        }
+
+        /* إعدادات الفيديو */
+        .video-container {
+            margin-top: 0px; /* تقليل المسافة بين الفيديو والنص */
+            width: 100%;
+            display: none; /* إخفاء الفيديو حتى الانتهاء من الكتابة */
+            border: none; /* إزالة الخطوط البيضاء حول الفيديو */
+            box-shadow: none; /* إزالة أي ظلال حول الفيديو */
+            max-width: 700px; /* تصغير حجم الفيديو */
+            height: auto;
+        }
+
+        /* إزالة الحدود من عنصر iframe */
+        .video-container iframe {
+            width: 100%;
+            height: 400px; /* تصغير حجم الفيديو */
+            border: none; /* إزالة حدود الفيديو */
+            box-shadow: none; /* إزالة الظلال حول الفيديو */
+        }
+
+        .info {
+            text-align: center;
+            font-size: 18px;
+            margin-top: 10px; /* تقليل المسافة بين المعلومات والنص */
+            display: none; /* إخفاء المعلومات حتى الانتهاء من الكتابة */
+            color: #0047ab; /* اللون الأزرق للنصوص */
+        }
+
+        .discord-link {
+            font-size: 36px;
+            color: #0047ab; /* اللون الأزرق */
+            margin-top: 10px; /* تقليل المسافة بين رابط Discord والنص */
+            text-decoration: none;
+            font-weight: bold;
+            display: none; /* إخفاء الرابط في الصفحة الأولى */
+        }
+
+        /* النص في الصفحة الثانية باللون الأزرق */
+        .blue-text {
+            color: #0047ab; /* النص باللون الأزرق */
+            font-size: 1.5em;
+            text-shadow: 0 0 10px rgba(0, 71, 171, 0.7);
+            border-right: 2px solid #0047ab; /* المؤشر باللون الأزرق */
+            animation: blink-cursor-blue 0.7s steps(2) infinite;
+            margin-top: 0px; /* تقليل المسافة بين النص والفيديو بشكل دقيق */
+        }
+
+        @keyframes blink-cursor-blue {
+            from { border-right-color: #0047ab; }
+            to { border-right-color: transparent; }
+        }
+
+        /* خلفية النجوم */
+        .stars {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #0047ab;
+            border-radius: 50%;
+            animation: twinkling 1.5s infinite ease-in-out;
+        }
+
+        @keyframes twinkling {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+
+        /* عرض الصورة في الصفحة الثانية بشكل كامل */
+        .image-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 30px;
+        }
+
+        .image-container img {
+            width: 100%;
+            max-height: 90vh;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal-text" id="text"></div>
+    <!-- صوت للصفحة الأولى -->
+    <audio id="audio1" autoplay>
+        <source src="path_to_your_audio_file1.mp3" type="audio/mpeg">
+    </audio>
+    
+    <!-- فيديو يتم إخفاؤه في البداية (الفيديو الوحيد في الصفحة الثانية) -->
+    <div class="video-container" id="video-container">
+        <iframe src="https://media.discordapp.net/attachments/1294666102714007637/1303663531668934696/image.png?ex=672c92c6&is=672b4146&hm=24c7adb91fd322195820c4fcf69e4a7ae0ca99bc2627ea547a89173d1710036a&=&format=webp&quality=lossless&width=1440&height=597" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+
+    <!-- معلومات IP يتم إخفاؤها في البداية -->
+    <div class="info" id="ip-info">
+        <p>IP: </p>
+        <p>City: </p>
+        <p>Region: </p>
+        <p>Country: </p>
+        <p>Organization: </p>
+        <p>Timezone: </p>
+    </div>
+
+    <!-- رابط Discord يتم إخفاؤه في الصفحة الأولى -->
+    <a class="discord-link" href="https://discord.gg/5-1" target="_blank" id="discord-link">discord.gg/5-1</a>
+
+    <!-- صورة في الصفحة الثانية -->
+    <div class="image-container" id="image-container" style="display:none;">
+        
+    </div>
+
+    <!-- صوت للصفحة الثانية -->
+    <audio id="audio2" autoplay style="display:none;">
+        <source src="https://cdn.discordapp.com/attachments/1262702268256354386/1303723794321510480/hmm.mp3?ex=672ccae6&is=672b7966&hm=4cad3455485e55a2db6f44eb825c117ffb3b1cb33dc0035f4a0fa46dfd12b0b0&" type="audio/mpeg">
+    </audio>
+
+    <script>
+        const lines = [
+            "[+] dumped By boshikha ",
+            "[+] partner with relx x 7kaya x relx",
+            "[+] don't care we are 1 time",
+            "[+]welcome Discord.gg/5-1  "
+        ];
+
+        let lineIndex = 0;
+        let charIndex = 0;
+
+        function type() {
+            if (lineIndex < lines.length) {
+                const currentLine = lines[lineIndex];
+                if (charIndex < currentLine.length) {
+                    document.getElementById("text").innerHTML += currentLine.charAt(charIndex);
+                    charIndex++;
+                    setTimeout(type, 100);
+                } else {
+                    document.getElementById("text").innerHTML += "<br>";
+                    charIndex = 0;
+                    lineIndex++;
+                    setTimeout(type, 500);
+                }
+            } else {
+                // بعد انتهاء الكتابة، إخفاء النص المتحرك الأول وإظهار النص الجديد
+                setTimeout(showNewContent, 1000);
+            }
+        }
+
+        function showNewContent() {
+            // إخفاء النص المتحرك الأول
+            document.getElementById("text").style.display = "none";
+
+            // إظهار الفيديو في الجزء العلوي
+            document.getElementById('video-container').style.display = 'block';
+            document.getElementById('ip-info').style.display = 'block';
+
+            // إظهار رابط Discord في الصفحة الثانية
+            document.getElementById('discord-link').style.display = 'block';
+
+            // إظهار الصورة في الصفحة الثانية
+            document.getElementById('image-container').style.display = 'block';
+
+            // إضافة النص الأزرق الجديد في الصفحة الثانية
+            const newText = document.createElement('div');
+            newText.classList.add('blue-text');
+            
+            document.body.appendChild(newText);
+
+            // إضافة النجوم إلى الخلفية
+            for (let i = 0; i < 100; i++) {
+                let star = document.createElement("div");
+                star.classList.add("stars");
+                star.style.top = Math.random() * 100 + "vh";
+                star.style.left = Math.random() * 100 + "vw";
+                document.body.appendChild(star);
+            }
+
+            // تشغيل الصوت للصفحة الثانية
+            document.getElementById("audio2").play();
+
+            // الحصول على بيانات IP وعرضها
+            fetch('https://ipinfo.io/json')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('ip-info').innerHTML = `
+                        <p>IP: ${data.ip}</p>
+                        <p>City: ${data.city}</p>
+                        <p>Region: ${data.region}</p>
+                        <p>Country: ${data.country}</p>
+                        <p>Organization: ${data.org}</p>
+                        <p>Timezone: ${data.timezone}</p>
+                    `;
+                })
+                .catch(error => console.error('Error fetching IP info:', error));
+        }
+
+        // بدء الكتابة عند تحميل الصفحة
+        window.onload = function() {
+            // تشغيل الصوت للصفحة الأولى
+            document.getElementById("audio1").play();
+            type();
+        };
+    </script>
+</body>
+</html>
